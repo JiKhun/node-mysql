@@ -1,4 +1,4 @@
-# vuetemplate
+# node-mysql
 
 > node-mysql服务端项目模板
 
