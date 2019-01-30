@@ -4,12 +4,9 @@ var resultData = require('./controllers.config.js');
 var fn_add = async (ctx, next) => {
     await test.addData().then(result => {
         if (result.insertId > 0) {
-            resultData.msg = '添加成功';
-            ctx.body = resultData;
+            ctx.body = resultData.success({msg:'添加成功'});
         } else {
-            resultData.returnCode = 302;
-            resultData.msg = '添加失败';
-            ctx.body = resultData;
+            ctx.body = resultData.abnormal({msg:'添加失败'});
         }
     });
 };
@@ -17,12 +14,9 @@ var fn_add = async (ctx, next) => {
 var fn_delete = async (ctx, next) => {
     await test.deleteData().then(result => {
         if (result.affectedRows > 0) {
-            resultData.msg = '删除成功';
-            ctx.body = resultData;
+            ctx.body = resultData.success({msg:'删除成功'});
         } else {
-            resultData.returnCode = 302;
-            resultData.msg = '数据不存在,删除失败!';
-            ctx.body = resultData;
+            ctx.body = resultData.abnormal({msg:'删除失败'});
         }
     });
 };
@@ -31,12 +25,9 @@ var fn_delete = async (ctx, next) => {
 var fn_updata = async (ctx, next) => {
     await test.updataData().then(result => {
         if (result.affectedRows > 0) {
-            resultData.msg = '修改成功';
-            ctx.body = resultData;
+            ctx.body = resultData.success({msg:'修改成功'});
         } else {
-            resultData.returnCode = 302;
-            resultData.msg = '数据不存在,修改失败!';
-            ctx.body = resultData;
+            ctx.body = resultData.success({msg:'数据不存在,修改失败!'});
         }
     });
 };
@@ -46,8 +37,7 @@ var fn_updata = async (ctx, next) => {
 //查询
 var fn_query = async (ctx, next) => {
     await test.getData().then(result => {
-        resultData.data = result;
-        ctx.body = resultData;
+        ctx.body = resultData.success({data:result});
     });
 };
 /*

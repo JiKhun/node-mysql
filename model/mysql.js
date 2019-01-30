@@ -9,13 +9,13 @@ const pool = mysql.createPool({
     database: databaseConfig.DATABASE,
 });
 
-let query = (sql, params) => {
+let query = (sql, value = false) => {
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             if (err) {
                 reject(err)
             } else {
-                connection.query(sql, params, (err, rows) => {
+                connection.query(sql, value, (err, rows) => {
                     if (err) {
                         reject(err)
                     } else {
@@ -28,20 +28,20 @@ let query = (sql, params) => {
     })
 }
 
-let websites =
-    `create table if not exists websites(
-     id INT NOT NULL AUTO_INCREMENT,
-     name VARCHAR(100) NOT NULL COMMENT '名称',
-     url VARCHAR(100) NOT NULL COMMENT '地址',
-     alexa VARCHAR(100) NOT NULL COMMENT '排名',
-     country VARCHAR(100) NOT NULL COMMENT '国家',
-     PRIMARY KEY ( id )
-    );`
-let createTable = (sql) => {
-    return query(sql, [])
-}
+// let websites =
+//     `create table if not exists websites(
+//      id INT NOT NULL AUTO_INCREMENT,
+//      name VARCHAR(100) NOT NULL COMMENT '名称',
+//      url VARCHAR(100) NOT NULL COMMENT '地址',
+//      alexa VARCHAR(100) NOT NULL COMMENT '排名',
+//      country VARCHAR(100) NOT NULL COMMENT '国家',
+//      PRIMARY KEY ( id )
+//     );`
+// let createTable = (sql) => {
+//     return query(sql, [])
+// }
 // 建表
-createTable(websites)
+// createTable(websites)
 //增加
 exports.addData = () => {
     let addSql = 'INSERT INTO websites(Id,name,url,alexa,country) VALUES(0,?,?,?,?)';
@@ -50,9 +50,8 @@ exports.addData = () => {
 }
 //删除
 exports.deleteData = () => {
-    let addSql = 'DELETE FROM websites where id=8';
-    var addSqlParams = [];
-    return query(addSql, addSqlParams)
+    let addSql = 'DELETE FROM websites where Id=8';
+    return query(addSql)
 }
 //修改
 exports.updataData = () => {
@@ -62,7 +61,26 @@ exports.updataData = () => {
 }
 //查询
 exports.getData = () => {
-    let addSql = 'select * from websites';
-    var addSqlParams = [];
-    return query(addSql, addSqlParams)
+    let addSql = 'SELECT * FROM websites';
+    return query(addSql)
+}
+
+
+
+
+
+//查询手机号码是否存在
+exports.findDataByTel = (value) => {
+    let addSql = `select * from users where tel="${value}";`
+    return query(addSql)
+}
+//注册
+exports.userRegister = (value) =>{
+    let addSql = 'INSERT INTO users(Id,name,tel,company,email,password,job) VALUES(0,?,?,?,?,?,?)';
+    return query(addSql, value)
+}
+//token写入
+exports.writeToken = (value) => {
+    let addSql = `UPDATE users SET token = ? WHERE Id = ?`;
+    return query(addSql,value)
 }
