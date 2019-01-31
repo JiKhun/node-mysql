@@ -67,20 +67,43 @@ exports.getData = () => {
 
 
 
+//注册
+exports.userRegister = (value) =>{
+    let addSql = 'INSERT INTO users(Id,name,tel,company,email,password,job,applyTime,token) VALUES(0,?,?,?,?,?,?,?,?)';
+    return query(addSql, value)
+}
 
+//查询token获取用户信息
+exports.findDataByToken = (value) => {
+    let addSql = `select * from users where token="${value}";`
+    return query(addSql)
+}
 
 //查询手机号码是否存在
 exports.findDataByTel = (value) => {
     let addSql = `select * from users where tel="${value}";`
     return query(addSql)
 }
-//注册
-exports.userRegister = (value) =>{
-    let addSql = 'INSERT INTO users(Id,name,tel,company,email,password,job) VALUES(0,?,?,?,?,?,?)';
-    return query(addSql, value)
-}
+
 //token写入
 exports.writeToken = (value) => {
     let addSql = `UPDATE users SET token = ? WHERE Id = ?`;
+    return query(addSql,value)
+}
+
+//插入用户试用记录
+exports.addUserTryOut = (value) => {
+    let addSql = `INSERT INTO user_tryout(Id,productId,applyTime,userId,productName,productDescribe) VALUES(0,?,?,?,?,?)`;
+    return query(addSql,value)
+}
+
+//查询产品详情
+exports.findDataByProduct = (value) => {
+    let addSql = `select * from products where id="${value}";`;
+    return query(addSql,value)
+}
+//查询用户是否申请过试用
+exports.findUserIsTryout = (value) => {
+    let addSql = `select * from user_tryout where userId = ? or productId = ?`;
     return query(addSql,value)
 }
