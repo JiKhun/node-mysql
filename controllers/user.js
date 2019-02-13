@@ -1,5 +1,5 @@
-const user = require('../model/mysql.js');
-const resultData = require('./controllers.config.js');
+const user = require('../model/website.mysql.js');
+const resultData = require('../config');
 const time = require('../utils/index.js')
 const md5 = require('md5')
 const token = require('../utils/token.js')
@@ -71,6 +71,7 @@ const fn_signin = async (ctx, next) => {
                 let Token = token.encryption(req.tel);
                 await user.writeToken([Token, result[0].id]).then(res => {
                     result[0].token = Token;
+                    delete result[0].password;
                     ctx.body = resultData.success({ data: result[0], msg: '登录成功！' });
                 })
             } else if (result[0].password !== md5(req.password + resultData.key)) {
@@ -82,10 +83,12 @@ const fn_signin = async (ctx, next) => {
 //获取会员信息
 const fn_info = async (ctx, next) => {
     let req = ctx.request.body;
-    await user.findDataByToken(req.token).then(async (result1) => {
+    await user.findDataByToken(req.token).then(async (result) => {
+        console.log(result)
         if (result.length == 0) {
-            ctx.body = resultData.abnormal({ msg: '该会员不存在！' });
+            ctx.body = resultData.tokenFail({ msg: '该会员不存在！' });
         } else {
+            delete result[0].password;
             ctx.body = resultData.success({ data: result[0]});
         }
     })
@@ -100,5 +103,5 @@ const fn_info = async (ctx, next) => {
 module.exports = {
     'POST /web/user/signup': fn_signup,
     'POST /web/user/signin': fn_signin,
-    'GET /web/user/info': fn_info,
+    'POST /web/user/info': fn_info,
 };
